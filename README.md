@@ -4,10 +4,16 @@
 
 This project is a full-featured home library management system called Homebrary built with Django. It enables users to organize, track, and share their personal book collections, manage multiple libraries and bookshelves, and interact with friends for social reading and lending. The system is designed for individuals and families who want a robust, user-friendly solution for managing their physical books. See website here: https://automind.pythonanywhere.com/
 
+
 ## Main Features & Functionality
 - **Multi-library and bookshelf support:** Organize books by location (e.g., rooms, shelves).
 - **Book management:** Add, move, and delete books; fetch book details by ISBN from Open Library.
-- **Borrowing and lending:** Request to borrow books from friends, track borrow status.
+- **Borrowing and lending (BorrowRequests app):**
+   - Request to borrow books from friends (only friends can request).
+   - Owners can accept or decline requests.
+   - Borrow status is tracked (pending, accepted, declined).
+   - Only one accepted borrow per book at a time.
+   - Robust permission checks and error handling.
 - **Friend system:** Send, accept, and reject friend requests; view friends’ libraries.
 - **Account management:** Email-based authentication and account management using django-allauth, with custom templates.
 - **AJAX-powered book info lookup:** Fast, user-friendly book entry.
@@ -15,8 +21,9 @@ This project is a full-featured home library management system called Homebrary 
 
 ## Python Best Practices
 - **Separation of features:** The project is split into distinct Django apps for core functionality:
-   - **Management app:** Handles all book, library, and bookshelf management, as well as borrowing workflows.
+   - **Management app:** Handles all book, library, and bookshelf management.
    - **Friendship app:** Manages the friend system, friend requests, and related social features.
+   - **BorrowRequests app:** Handles all borrow/lend request workflows, status tracking, and permissions.
    - This modular approach makes the codebase easier to maintain, extend, and test.
 - **Custom user model:** Extends Django’s user system for future flexibility.
 - **Error handling:** Graceful error messages and robust exception handling throughout the codebase.
@@ -34,10 +41,12 @@ This project is a full-featured home library management system called Homebrary 
 - **CSRF protection:** All forms and AJAX endpoints use Django's CSRF token to protect against cross-site request forgery attacks.
 - **Authentication:** Relies on Django AllAuth's robust authentication system, with email verification required for all accounts.
 - **Environment variables:** Sensitive settings are managed via environment files for security.
+
 ## System Design Highlights
 - **Efficient data storage:** Minimal book metadata, user-specific copies only when needed.
 - **User-centric UX:** Fast, simple, and intuitive for non-technical users.
 - **Extensible:** Modular codebase allows for easy addition of new features (e.g., notifications, richer metadata, mobile support).
+- **BorrowRequests app:** Clean separation of borrow/lend logic, robust tests, and permission checks.
 - **Frontend/Backend synergy:** The combination of Django backend and custom frontend code enables a seamless, interactive experience while maintaining security and scalability.
 - **Static files:** Managed and served efficiently for fast page loads.
 - **Client-side search:** Book searching is performed in the browser using JavaScript for instant results, as the expected data size is small for home users.
@@ -54,8 +63,19 @@ This project is a full-featured home library management system called Homebrary 
 5. **Automatic creation of first Library and bookshelf:**
     - Use Django signals to automatically create a user their first library and bookshelf once they have verified their email address. Greatly reducing user onboarding friction.
 
-## Scaling & Production-Readiness (for Larger Teams/Users)
+---
 
+## Testing & Continuous Integration
+
+All major features, are covered by automated tests. Tests are run automatically for every pull request using GitHub Actions CI. To run tests locally:
+
+```
+python manage.py test
+```
+
+---
+
+## Scaling & Production-Readiness (for Larger Teams/Users)
 If this project were to grow into a larger, high-traffic system, the following architectural and coding improvements would be made:
 
 ### Architecture & Infrastructure
